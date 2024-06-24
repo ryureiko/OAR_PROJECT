@@ -11,18 +11,19 @@ SIDEBAR_STYLE = {
     "top": 0,
     "left": 0,
     "bottom": 0,
-    "width": "16rem",
+    "width": "18rem",  
     "padding": "2rem 1rem",
     "background-color": "#2c3e50", 
     "color": "white", 
 }
 
 CONTENT_STYLE = {
-    "margin-left": "18rem",
-    "margin-right": "2rem",
+    "margin-left": "18rem",  
+    "margin-right": "0",
     "padding": "2rem 1rem",
-    "background-color": "#ecf0f1",  
+    "background-color": "#ecf0f1",
 }
+
 
 sidebar = html.Div(
     [
@@ -48,7 +49,7 @@ sidebar = html.Div(
 
 content = html.Div(id="page-content", style=CONTENT_STYLE)
 
-app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
+app.layout = html.Div([dcc.Location(id="url"), sidebar, content], style={"overflow": "hidden"})
 
 @app.callback(
     Output("page-content", "children"),

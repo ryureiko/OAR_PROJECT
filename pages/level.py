@@ -4,13 +4,10 @@ import plotly.express as px
 from dash.dependencies import Input, Output
 from data import df
 
-# Список возможных регионов
 regions = df['region'].unique()
 
-# Список возможных лет
 years = df['year'].unique()
 
-# Словарь для маппинга имен столбцов на их русские эквиваленты
 age_group_labels = {
     'dis_unagegroup_to20': 'до 20 лет',
     'dis_unagegroup_20-29': 'от 20 до 29 лет',
@@ -61,7 +58,6 @@ layout = dbc.Container([
     ]),
 ], fluid=True) 
 
-# Обратные вызовы для обновления графиков при изменении параметров
 
 @callback(
     Output('unemployed-age-group-pie', 'figure'),
@@ -69,19 +65,15 @@ layout = dbc.Container([
      Input('year-dropdown', 'value')]
 )
 def update_unemployed_age_group_pie(region, year):
-    # Фильтрация данных по выбранному региону и году для безработных
     filtered_data = df[(df['region'] == region) & (df['year'] == year)]
 
-    # Суммирование численности безработных по возрастным группам
     unemployed_data = filtered_data[[
         'dis_unagegroup_to20', 'dis_unagegroup_20-29', 'dis_unagegroup_30-39', 
         'dis_unagegroup_40-49', 'dis_unagegroup_50-59', 'dis_unagegroup_60older'
     ]].sum()
 
-    # Перевод меток
     unemployed_data.index = unemployed_data.index.map(age_group_labels)
 
-    # Цветовая гамма для круговой диаграммы
     colors = ['#B2A2C7', '#C4D79A', '#DA9695', '#92CDDC', '#FAD890', '#558ED5']
 
     fig = px.pie(
@@ -89,7 +81,8 @@ def update_unemployed_age_group_pie(region, year):
         values=unemployed_data.values,
         title=f'Распределение численности безработных по возрастным группам <br>в регионе {region} ({year})',
         labels={'index': 'Возрастные группы', 'value': 'Численность безработных'},
-        color_discrete_sequence=colors
+        color_discrete_sequence=colors,
+        height=500
     )
 
     fig.update_layout(
@@ -115,19 +108,15 @@ def update_unemployed_age_group_pie(region, year):
      Input('year-dropdown', 'value')]
 )
 def update_employed_age_group_pie(region, year):
-    # Фильтрация данных по выбранному региону и году для занятых
     filtered_data = df[(df['region'] == region) & (df['year'] == year)]
 
-    # Суммирование численности занятых по возрастным группам
     employed_data = filtered_data[[
         'dis_emagegroup_to20', 'dis_emagegroup_20-29', 'dis_emagegroup_30-39',
         'dis_emagegroup_40-49', 'dis_emagegroup_50-59', 'dis_emagegroup_60older'
     ]].sum()
 
-    # Перевод меток
     employed_data.index = employed_data.index.map(age_group_labels)
 
-    # Цветовая гамма для круговой диаграммы
     colors = ['#B2A2C7', '#C4D79A', '#DA9695', '#92CDDC', '#FAD890', '#558ED5']
 
     fig = px.pie(
@@ -135,7 +124,8 @@ def update_employed_age_group_pie(region, year):
         values=employed_data.values,
         title=f'Распределение численности занятых по возрастным группам <br>в регионе {region} ({year})',
         labels={'index': 'Возрастные группы', 'value': 'Численность занятых'},
-        color_discrete_sequence=colors
+        color_discrete_sequence=colors,
+        height=500
     )
 
     fig.update_layout(

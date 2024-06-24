@@ -4,13 +4,10 @@ import plotly.express as px
 from dash.dependencies import Input, Output
 from data import df
 
-# Список возможных регионов
 regions = df['region'].unique()
 
-# Список возможных лет
 years = df['year'].unique()
 
-# Словарь для маппинга имен столбцов на их русские эквиваленты
 age_group_labels = {
     'num_unagegroup_to20': 'до 20 лет',
     'num_unagegroup_20-29': 'от 20 до 29 лет',
@@ -26,7 +23,6 @@ age_group_labels = {
     'num_emagegroup_60older': '60 и более лет'
 }
 
-# Макет страницы для столбчатых диаграмм
 layout = dbc.Container([
     dbc.Row([
         dbc.Col(html.H2("Численность безработных и занятых по возрастным группам по регионам РФ", className="text-center"))
@@ -52,16 +48,14 @@ layout = dbc.Container([
                 style={'width': '100%'}
             )
         ], width=6),
-    ]),
+    ], style={'margin-bottom': '20px'}), 
     dbc.Row([
         dbc.Col(dcc.Graph(id='unemployed-age-group-bar')),
-    ]),
+    ], style={'margin-bottom': '40px'}), 
     dbc.Row([
         dbc.Col(dcc.Graph(id='employed-age-group-bar')),
     ]),
 ], fluid=True)
-
-# Обратные вызовы для обновления столбчатых диаграмм при изменении параметров
 
 @callback(
     Output('unemployed-age-group-bar', 'figure'),
@@ -69,10 +63,8 @@ layout = dbc.Container([
      Input('year-dropdown-bar', 'value')]
 )
 def update_unemployed_age_group_bar(region, year):
-    # Фильтрация данных по выбранному региону и году для безработных
     filtered_data = df[(df['region'] == region) & (df['year'] == year)]
 
-    # Суммирование численности безработных по возрастным группам
     unemployed_data = filtered_data[[
         'num_unagegroup_to20', 'num_unagegroup_20-29', 'num_unagegroup_30-39', 
         'num_unagegroup_40-49', 'num_unagegroup_50-59', 'num_unagegroup_60older'
@@ -86,7 +78,7 @@ def update_unemployed_age_group_bar(region, year):
                  labels={'index': 'Возрастные группы', '0': 'Численность безработных'})
 
     fig.update_traces(marker_color='rgba(93, 164, 214, 0.8)', marker_line_color='rgba(93, 164, 214, 1.0)',
-                      marker_line_width=2)
+                      marker_line_width=2, width=0.5)  
 
     fig.update_layout(
         legend_title_text='Возрастные группы',
@@ -96,8 +88,17 @@ def update_unemployed_age_group_bar(region, year):
         font=dict(size=12, color='#2c3e50'),
         paper_bgcolor='#ecf0f1',
         plot_bgcolor='#ecf0f1',
-        xaxis=dict(showgrid=True, gridcolor='LightGrey', zerolinecolor='LightGrey'),
-        yaxis=dict(showgrid=True, gridcolor='LightGrey', zerolinecolor='LightGrey'),
+        xaxis=dict(
+            showgrid=False,  
+            zeroline=False,  
+            tickmode='linear',
+            dtick=1  
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor='LightGrey',
+            zerolinecolor='LightGrey'
+        ),
         margin=dict(l=20, r=20, t=40, b=20),
         hovermode="x unified",
         hoverlabel=dict(
@@ -115,16 +116,14 @@ def update_unemployed_age_group_bar(region, year):
      Input('year-dropdown-bar', 'value')]
 )
 def update_employed_age_group_bar(region, year):
-    # Фильтрация данных по выбранному региону и году для занятых
+
     filtered_data = df[(df['region'] == region) & (df['year'] == year)]
 
-    # Суммирование численности занятых по возрастным группам
     employed_data = filtered_data[[
         'num_emagegroup_to20', 'num_emagegroup_20-29', 'num_emagegroup_30-39',
         'num_emagegroup_40-49', 'num_emagegroup_50-59', 'num_emagegroup_60older'
     ]].sum().reset_index()
 
-    # Перевод меток
     employed_data['index'] = employed_data['index'].map(age_group_labels)
 
     fig = px.bar(employed_data, x='index', y=0,
@@ -132,7 +131,7 @@ def update_employed_age_group_bar(region, year):
                 labels={'index': 'Возрастные группы', '0': 'Численность занятых'})
 
     fig.update_traces(marker_color='rgba(255, 144, 14, 0.8)', marker_line_color='rgba(255, 144, 14, 1.0)',
-                      marker_line_width=2)
+                      marker_line_width=2, width=0.5) 
 
     fig.update_layout(
         legend_title_text='Возрастные группы',
@@ -142,8 +141,17 @@ def update_employed_age_group_bar(region, year):
         font=dict(size=12, color='#2c3e50'),
         paper_bgcolor='#ecf0f1',
         plot_bgcolor='#ecf0f1',
-        xaxis=dict(showgrid=True, gridcolor='LightGrey', zerolinecolor='LightGrey'),
-        yaxis=dict(showgrid=True, gridcolor='LightGrey', zerolinecolor='LightGrey'),
+        xaxis=dict(
+            showgrid=False,  
+            zeroline=False,  
+            tickmode='linear',
+            dtick=1  
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor='LightGrey',
+            zerolinecolor='LightGrey'
+        ),
         margin=dict(l=20, r=20, t=40, b=20),
         hovermode="x unified",
         hoverlabel=dict(

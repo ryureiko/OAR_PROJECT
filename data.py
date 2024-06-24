@@ -29,4 +29,3 @@ df_region = pd.read_csv('data/dataset_data.csv',
 # Загрузка географических данных (GeoJSON для карты России)
 with open('data/russia copy.geojson', 'r', encoding='UTF-8') as response:
     counties = json.load(response)
-
